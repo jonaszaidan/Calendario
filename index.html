@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>270 Dias • Nossa Linha do Tempo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --text-main: #ffffff;
+      --text-muted: #fed7aa;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: #831843;
+      color: var(--text-main);
+      padding: 16px;
+      padding-bottom: 100px;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Fundo 1: Degradê do Céu Tropical */
+    .bg-sky {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -3;
+      background: linear-gradient(180deg, 
+        #be185d 0%, 
+        #db2777 18%, 
+        #e11d48 35%, 
+        #f43f5e 50%, 
+        #fb7185 65%, 
+        #fb923c 80%, 
+        #f59e0b 92%, 
+        #fef08a 100%
+      );
+      pointer-events: none;
+    }
+
+    /* Fundo 2: Ilustração Vetorial Completa Fixa */
+    .bg-art {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -2;
+      pointer-events: none;
+      display: block;
+    }
+
+    /* Cabeçalho Fixo Glassmorphism */
+    header {
+      position: sticky;
+      top: 12px;
+      z-index: 50;
+      background: rgba(80, 7, 36, 0.78);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(254, 215, 170, 0.35);
+      border-radius: 24px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.5), 0 0 20px rgba(244, 63, 94, 0.3);
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffffff 0%, #fef08a 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .badge-percent {
+      background: rgba(254, 240, 138, 0.25);
+      color: #fef08a;
+      border: 1px solid rgba(254, 240, 138, 0.5);
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      box-shadow: 0 0 12px rgba(254, 240, 138, 0.3);
+    }
+
+    .progress-bar {
+      background: rgba(255, 255, 255, 0.18);
+      height: 9px;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .progress-fill {
+      background: linear-gradient(90deg, #f43f5e, #fb923c, #fef08a);
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      box-shadow: 0 0 14px rgba(254, 240, 138, 0.7);
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .stats-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+      color: #fef08a;
+      font-weight: 600;
+    }
+
+    .btn-quick-actions {
+      background: rgba(254, 240, 138, 0.2);
+      border: 1px solid rgba(254, 240, 138, 0.4);
+      color: #ffffff;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    /* Lista de Dias */
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .day-card {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      padding: 15px 18px;
+      border-radius: 20px;
+      user-select: none;
+      cursor: pointer;
+      box-shadow: 0 6px 22px rgba(0, 0, 0, 0.25);
+      transition: transform 0.15s ease, box-shadow 0.25s ease;
+    }
+
+    .day-card:active {
+      transform: scale(0.98);
+    }
+
+    .left-col {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .top-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .countdown-number {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .tag-today {
+      background: #f59e0b;
+      color: #451a03;
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 999px;
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+    }
+
+    .date-str {
+      font-size: 0.82rem;
+      opacity: 0.9;
+      font-weight: 500;
+      text-transform: capitalize;
+    }
+
+    .heart-circle {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.25s ease;
+    }
+
+    .heart-circle svg {
+      width: 17px;
+      height: 17px;
+      fill: none;
+      stroke-width: 2.3;
+      transition: all 0.25s ease;
+    }
+
+    .day-card.completed {
+      background: rgba(225, 29, 72, 0.65) !important;
+      border-color: #fef08a !important;
+      box-shadow: 0 0 22px rgba(254, 240, 138, 0.6);
+    }
+
+    .day-card.completed .countdown-number {
+      text-decoration: line-through;
+      color: #fef08a !important;
+    }
+
+    .day-card.completed .heart-circle {
+      background: #fef08a !important;
+      border-color: #fef08a !important;
+      transform: scale(1.1);
+      box-shadow: 0 0 14px rgba(254, 240, 138, 0.9);
+    }
+
+    .day-card.completed .heart-circle svg {
+      fill: #831843 !important;
+      stroke: #831843 !important;
+    }
+
+    .timeline-milestone {
+      background: rgba(76, 5, 25, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 26px;
+      padding: 14px;
+      margin: 16px 0;
+      border: 1.5px solid rgba(254, 240, 138, 0.45);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+      text-align: center;
+    }
+
+    .milestone-badge {
+      display: inline-block;
+      font-size: 0.76rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #ffffff;
+      background: rgba(225, 29, 72, 0.6);
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+
+    .timeline-milestone img {
+      width: 100%;
+      border-radius: 20px;
+      display: block;
+      object-fit: cover;
+      max-height: 450px;
+    }
+
+    .milestone-caption {
+      margin-top: 11px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #fef08a;
+      font-style: italic;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Mural de Memórias */
+    .memories-wall-section {
+      max-width: 480px;
+      margin: 50px auto 30px auto;
+      text-align: center;
+    }
+
+    .wall-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: #ffffff;
+      text-shadow: 0 2px 14px rgba(254, 240, 138, 0.8);
+      margin-bottom: 6px;
+    }
+
+    .wall-subtitle {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #fef08a;
+      margin-bottom: 24px;
+    }
+
+    .memories-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .memory-item {
+      background: #ffffff;
+      padding: 10px 10px 14px 10px;
+      border-radius: 18px;
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.35);
+      transform: rotate(var(--rot, 0deg));
+      transition: transform 0.25s ease;
+    }
+
+    .memory-item:nth-child(4n+1) { --rot: -2deg; }
+    .memory-item:nth-child(4n+2) { --rot: 1.8deg; }
+    .memory-item:nth-child(4n+3) { --rot: -1.2deg; }
+    .memory-item:nth-child(4n)   { --rot: 2.3deg; }
+
+    .memory-item:active {
+      transform: scale(1.04) rotate(0deg);
+      z-index: 10;
+    }
+
+    .memory-item img {
+      width: 100%;
+      height: 175px;
+      object-fit: cover;
+      border-radius: 12px;
+      display: block;
+    }
+
+    .memory-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #1f2937;
+      margin-top: 10px;
+    }
+
+    .upload-btn {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 0.72rem;
+      cursor: pointer;
+      margin-top: 6px;
+      display: inline-block;
+    }
+
+    /* Modais e Popups */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-box {
+      background: #3b071a;
+      border: 2px solid rgba(254, 240, 138, 0.6);
+      border-radius: 24px;
+      padding: 24px;
+      max-width: 380px;
+      width: 100%;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 25px rgba(244, 63, 94, 0.4);
+      text-align: center;
+      animation: popIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .modal-desc {
+      font-size: 0.85rem;
+      color: #fed7aa;
+      margin-bottom: 18px;
+    }
+
+    .month-buttons {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+      max-height: 220px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .btn-month {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(254, 240, 138, 0.4);
+      color: #fff;
+      padding: 8px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+
+    .btn-month:active {
+      background: #f43f5e;
+    }
+
+    .modal-close {
+      background: linear-gradient(90deg, #f43f5e, #fb923c);
+      border: none;
+      color: #fff;
+      font-weight: 800;
+      padding: 12px 20px;
+      border-radius: 14px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      width: 100%;
+    }
+
+    .cute-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      background: linear-gradient(135deg, #4c0519 0%, #831843 100%);
+      border: 2px solid #fef08a;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.85), 0 0 35px rgba(254, 240, 138, 0.7);
+      border-radius: 28px;
+      padding: 26px 22px;
+      max-width: 380px;
+      width: 90%;
+      text-align: center;
+      z-index: 150;
+      display: none;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .cute-popup.show {
+      display: block;
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+
+    .cute-popup h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.45rem;
+      color: #fef08a;
+      margin-bottom: 12px;
+    }
+
+    .cute-popup p {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #ffe4e6;
+      margin-bottom: 22px;
+      font-style: italic;
+    }
+
+    .cute-heart-icon {
+      font-size: 2.8rem;
+      margin-bottom: 10px;
+      display: inline-block;
+      animation: pulse 1.2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Camada 1: Céu Degradê Fixo -->
+  <div class="bg-sky"></div>
+
+  <!-- Camada 2: Vetor de Alta Compatibilidade com o Cenário Sunset -->
+  <svg class="bg-art" viewBox="0 0 1000 1600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#fffbeb" stop-opacity="1" />
+        <stop offset="45%" stop-color="#fef08a" stop-opacity="0.95" />
+        <stop offset="75%" stop-color="#fde047" stop-opacity="0.6" />
+        <stop offset="100%" stop-color="#f59e0b" stop-opacity="0" />
+      </radialGradient>
+      <linearGradient id="waterGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#fef08a" stop-opacity="0.8" />
+        <stop offset="35%" stop-color="#f43f5e" stop-opacity="0.6" />
+        <stop offset="100%" stop-color="#831843" stop-opacity="0.95" />
+      </linearGradient>
+    </defs>
+    <circle cx="240" cy="740" r="42" fill="#ffffff" opacity="0.9" />
+    <circle cx="500" cy="850" r="230" fill="url(#sunGlow)" />
+    <circle cx="860" cy="780" r="68" fill="#fffbeb" opacity="0.88" />
+    <path fill="#701a75" opacity="0.85" d="M0,890 L260,820 L500,900 L740,820 L1000,890 L1000,1050 L0,1050 Z" />
+    <path fill="#4a044e" opacity="0.95" d="M0,930 L320,870 L500,920 L680,870 L1000,930 L1000,1080 L0,1080 Z" />
+    <path fill="url(#waterGlow)" d="M120,950 Q500,940 880,950 L950,1600 L50,1600 Z" />
+    <line x1="380" y1="970" x2="620" y2="970" stroke="#fef08a" stroke-width="4" opacity="0.8" />
+    <line x1="330" y1="1000" x2="670" y2="1000" stroke="#fef08a" stroke-width="5" opacity="0.75" />
+    <line x1="280" y1="1040" x2="720" y2="1040" stroke="#fde047" stroke-width="5" opacity="0.7" />
+    <line x1="230" y1="1090" x2="770" y2="1090" stroke="#fba93b" stroke-width="6" opacity="0.65" />
+    <line x1="180" y1="1150" x2="820" y2="1150" stroke="#f43f5e" stroke-width="6" opacity="0.6" />
+    <path fill="#2e0325" d="M0,920 Q180,960 220,1100 Q150,1200 240,1350 Q120,1450 180,1600 L0,1600 Z" />
+    <path fill="#2e0325" d="M1000,920 Q820,960 780,1100 Q850,1200 760,1350 Q880,1450 820,1600 L1000,1600 Z" />
+    <g fill="#1a0215">
+      <path d="M50,1600 Q55,800 65,180 L80,180 Q70,800 65,1600 Z" />
+      <path d="M72,180 Q10,130 0,160 Q25,165 72,180 Q30,100 20,95 Q45,120 72,180 Q75,80 85,85 Q82,120 72,180 Q120,105 150,125 Q115,140 72,180 Q125,175 145,210 Q100,185 72,180 Z" />
+      <path d="M150,1600 Q160,950 170,420 L182,420 Q172,950 162,1600 Z" />
+      <path d="M176,420 Q110,380 90,410 Q120,410 176,420 Q140,340 120,335 Q145,365 176,420 Q185,320 200,325 Q192,365 176,420 Q230,350 255,375 Q215,390 176,420 Q225,430 240,465 Q195,435 176,420 Z" />
+      <path d="M940,1600 Q930,800 915,220 L900,220 Q915,800 925,1600 Z" />
+      <path d="M908,220 Q840,170 825,200 Q860,205 908,220 Q865,140 850,135 Q880,160 908,220 Q915,120 930,125 Q922,160 908,220 Q960,145 990,165 Q955,180 908,220 Q965,215 985,250 Q940,225 908,220 Z" />
+      <path d="M810,1600 Q800,980 785,450 L772,450 Q788,980 798,1600 Z" />
+      <path d="M778,450 Q720,410 700,435 Q730,440 778,450 Q740,370 720,365 Q745,395 778,450 Q788,350 802,355 Q795,395 778,450 Q830,380 855,405 Q815,420 778,450 Q830,460 845,495 Q800,465 778,450 Z" />
+    </g>
+  </svg>
+
+  <header>
+    <div class="title-row">
+      <h1>Nossa Contagem ❤</h1>
+      <span class="badge-percent" id="badgePercent">0%</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="stats-row">
+      <span>Faltam: <strong id="statRestantes">270</strong> | Feitos: <strong id="statFeitos">0</strong></span>
+      <button class="btn-quick-actions" onclick="abrirModalAcoes()">⚡ Ações Rápidas</button>
+    </div>
+  </header>
+
+  <div class="list" id="daysList"></div>
+
+  <!-- Mural de Memórias -->
+  <div class="memories-wall-section">
+    <h2 class="wall-title">Mural de Memórias ✨</h2>
+    <p class="wall-subtitle">Cada dia vivido, uma história para a vida inteira.</p>
+
+    <div class="memories-grid">
+      <div class="memory-item">
+        <img id="wallImg1" src="WhatsApp Image 2026-09-02 at 19.08.39.jpeg" alt="O nosso brinde">
+        <div class="memory-text">O nosso brinde 🍷</div>
+        <div id="fb_wall1" style="display:none;"><label class="upload-btn">Carregar<input type="file" accept="image/*" style="display:none" onchange="salvarFotoLocal(event, 'wallImg1', 'foto_wall1', 'fb_wall1')"></label></div>
+      </div>
+      <div class="memory-item">
+        <img id="wallImg2" src="WhatsApp Image 2026-09-02 at 19.20.21.jpeg" alt="Lagoa da Pampulha">
+        <div class="memory-text">Sol & Companhia ☀️</div>
+        <div id="fb_wall2" style="display:none;"><label class="upload-btn">Carregar<input type="file" accept="image/*" style="display:none" onchange="salvarFotoLocal(event, 'wallImg2', 'foto_wall2', 'fb_wall2')"></label></div>
+      </div>
+      <div class="memory-item">
+        <img id="wallImg3" src="WhatsApp Image 2026-09-02 at 19.20.21 (4).jpeg" alt="Preguicinha">
+        <div class="memory-text">Dengo & Conforto 🤍</div>
+        <div id="fb_wall3" style="display:none;"><label class="upload-btn">Carregar<input type="file" accept="image/*" style="display:none" onchange="salvarFotoLocal(event, 'wallImg3', 'foto_wall3', 'fb_wall3')"></label></div>
+      </div>
+      <div class="memory-item">
+        <img id="wallImg4" src="WhatsApp Image 2026-09-02 at 19.25.03.jpeg" alt="Pôr do Sol">
+        <div class="memory-text">Fim de tarde de ouro 🌅</div>
+        <div id="fb_wall4" style="display:none;"><label class="upload-btn">Carregar<input type="file" accept="image/*" style="display:none" onchange="salvarFotoLocal(event, 'wallImg4', 'foto_wall4', 'fb_wall4')"></label></div>
+      </div>
+      <div class="memory-item">
+        <img id="wallImg5" src="WhatsApp Image 2026-09-02 at 19.25.04 (1).jpeg" alt="Mirante da Serra">
+        <div class="memory-text">No topo do mundo ⛰️</div>
+        <div id="fb_wall5" style="display:none;"><label class="upload-btn">Carregar<input type="file" accept="image/*" style="display:none" onchange="salvarFotoLocal(event, 'wallImg5', 'foto_wall5', 'fb_wall5')"></label></div>
+      </div>
+      <div class="memory-item">
+        <img id="wallImg6" src="WhatsApp Image 2026-09-02 at 19.25.04 (2).jpeg" alt="Rolê de Moto">
+        <div class="memory-text">Parceria na estrada 🏍️</div>
+        <div id="fb_wall6" style="display:none;"><label class="upload-btn">Carregar<input type="file" accept="image/*" style="display:none" onchange="salvarFotoLocal(event, 'wallImg6', 'foto_wall6', 'fb_wall6')"></label></div>
+      </div>
+      <div class="memory-item">
+        <img id="wallImg7" src="WhatsApp Image 2026-09-02 at 19.25.04 (3).jpeg" alt="Sorrisos na Orla">
+        <div class="memory-text">Alegria que transborda 💙</div>
+        <div id="fb_wall7" style="display:none;"><label class="upload-btn">Carregar<input type="file" accept="image/*" style="display:none" onchange="salvarFotoLocal(event, 'wallImg7', 'foto_wall7', 'fb_wall7')"></label></div>
+      </div>
+      <div class="memory-item">
+        <img id="wallImg8" src="WhatsApp Image 2026-09-02 at 19.25.04 (4).jpeg" alt="Beijo no Mural">
+        <div class="memory-text">Nosso amor em cores 🎨</div>
+        <div id="fb_wall8" style="display:none;"><label class="upload-btn">Carregar<input type="file" accept="image/*" style="display:none" onchange="salvarFotoLocal(event, 'wallImg8', 'foto_wall8', 'fb_wall8')"></label></div>
+      </div>
+      <div class="memory-item">
+        <img id="wallImg9" src="WhatsApp Image 2026-09-02 at 19.25.04 (8).jpeg" alt="Centro Histórico">
+        <div class="memory-text">Minha gata em Ouro Preto 🏛️</div>
+        <div id="fb_wall9" style="display:none;"><label class="upload-btn">Carregar<input type="file" accept="image/*" style="display:none" onchange="salvarFotoLocal(event, 'wallImg9', 'foto_wall9', 'fb_wall9')"></label></div>
+      </div>
+      <div class="memory-item">
+        <img id="wallImg10" src="WhatsApp Image 2026-09-02 at 19.25.04 (9).jpeg" alt="Cuidado e Carinho">
+        <div class="memory-text">Carinho na piscina 💦</div>
+        <div id="fb_wall10" style="display:none;"><label class="upload-btn">Carregar<input type="file" accept="image/*" style="display:none" onchange="salvarFotoLocal(event, 'wallImg10', 'foto_wall10', 'fb_wall10')"></label></div>
+      </div>
+      <div class="memory-item">
+        <img id="wallImg11" src="WhatsApp Image 2026-09-02 at 19.25.04 (10).jpeg" alt="Festa em Família">
+        <div class="memory-text">Família reunida & Festa 🎈</div>
+        <div id="fb_wall11" style="display:none;"><label class="upload-btn">Carregar<input type="file" accept="image/*" style="display:none" onchange="salvarFotoLocal(event, 'wallImg11', 'foto_wall11', 'fb_wall11')"></label></div>
+      </div>
+      <div class="memory-item">
+        <img id="wallImg12" src="WhatsApp Image 2026-09-02 at 19.25.04 (11).jpeg" alt="Beijo na Serra">
+        <div class="memory-text">Beijo com vista 🌄</div>
+        <div id="fb_wall12" style="display:none;"><label class="upload-btn">Carregar<input type="file" accept="image/*" style="display:none" onchange="salvarFotoLocal(event, 'wallImg12', 'foto_wall12', 'fb_wall12')"></label></div>
+      </div>
+      <div class="memory-item">
+        <img id="wallImg13" src="WhatsApp Image 2026-09-02 at 19.25.04 (5).jpeg" alt="Preguicinha com as meninas">
+        <div class="memory-text">Aconchego & Crianças 🧸</div>
+        <div id="fb_wall13" style="display:none;"><label class="upload-btn">Carregar<input type="file" accept="image/*" style="display:none" onchange="salvarFotoLocal(event, 'wallImg13', 'foto_wall13', 'fb_wall13')"></label></div>
+      </div>
+      <div class="memory-item">
+        <img id="wallImg14" src="WhatsApp Image 2026-09-02 at 19.25.04 (6).jpeg" alt="Reunião de Família">
+        <div class="memory-text">Nosso povo reunido 🏠</div>
+        <div id="fb_wall14" style="display:none;"><label class="upload-btn">Carregar<input type="file" accept="image/*" style="display:none" onchange="salvarFotoLocal(event, 'wallImg14', 'foto_wall14', 'fb_wall14')"></label></div>
+      </div>
+      <div class="memory-item">
+        <img id="wallImg15" src="WhatsApp Image 2026-09-02 at 19.25.04 (7).jpeg" alt="Passeio na Igreja Histórica">
+        <div class="memory-text">Tradição & Amor ⛪</div>
+        <div id="fb_wall15" style="display:none;"><label class="upload-btn">Carregar<input type="file" accept="image/*" style="display:none" onchange="salvarFotoLocal(event, 'wallImg15', 'foto_wall15', 'fb_wall15')"></label></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalAcoes">
+    <div class="modal-box">
+      <h2 class="modal-title">⚡ Preenchimento Rápido</h2>
+      <p class="modal-desc">Marque um mês inteiro de uma só vez caso tenha trocado de aparelho ou limpado o cache:</p>
+      
+      <div class="month-buttons" id="monthButtonsList"></div>
+
+      <button class="modal-close" onclick="fecharModalAcoes()">Fechar Janela</button>
+    </div>
+  </div>
+
+  <div class="cute-popup" id="cutePopup">
+    <div class="cute-heart-icon" id="popupIcon">💖</div>
+    <h3 id="popupTitle">Mês Concluído!</h3>
+    <p id="popupMessage">Mensagem especial do nosso amor.</p>
+    <button class="modal-close" onclick="fecharPopupFofo()" id="popupBtn">Continuar Juntos ❤</button>
+  </div>
+
+  <script>
+    const TOTAL_DIAS = 270;
+    const dataInicio = new Date(2026, 8, 1); // 01/09/2026
+
+    function obterDataLocalStr(d) {
+      const ano = d.getFullYear();
+      const mes = String(d.getMonth() + 1).padStart(2, '0');
+      const dia = String(d.getDate()).padStart(2, '0');
+      return `${ano}-${mes}-${dia}`;
+    }
+
+    const hoje = new Date();
+    const hojeStr = obterDataLocalStr(hoje);
+
+    const STORAGE_KEY = 'checkin_270_tropical_v5';
+    let checks = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+
+    const diasPorMes = {};
+
+    const mensagensPorMes = {
+      '2026-08': {
+        title: 'Setembro/2026 Superado! 🌱',
+        icon: '🌱',
+        msg: 'O primeiro passo foi dado! Começamos a nossa contagem e a certeza no peito é uma só: não importa a distância ou a rotina, o nosso amor é abrigo seguro e vai superar cada pequeno desafio desse período.'
+      },
+      '2026-09': {
+        title: 'Outubro/2026 Vencido! 🍂',
+        icon: '🍂',
+        msg: 'Mais um mês inteirinho conquistado! Manter os sentimentos aquecidos é fácil quando penso no seu sorriso. Estamos construindo algo forte, dia após dia, com paciência e carinho sem fim.'
+      },
+      '2026-10': {
+        title: 'Novembro/2026 Concluído! 🕯️',
+        icon: '🕯️',
+        msg: 'Um terço da nossa jornada já ficou para trás! Olhe o quanto a gente já caminhou. O coração continua quentinho e cheio de planos, sabendo que tudo isso é só um preparativo para o que vem pela frente.'
+      },
+      '2026-11': {
+        title: 'Dezembro/2026 Finalizado! ✨',
+        icon: '✨',
+        msg: 'Fechando o ano com chave de ouro e com o melhor sentimento do mundo guardado no peito. Que a nossa cumplicidade seja a luz que aquece qualquer dia difícil. Juntos somos imparáveis!'
+      },
+      '2027-00': {
+        title: 'Janeiro/2027 Conquistado! 🌅',
+        icon: '🌅',
+        msg: 'Ano novo e a nossa contagem na reta de frente! Mais de 150 dias vencidos. A saudade pode apertar, mas ela só serve para confirmar a grandeza do que construímos. Te amo a cada segundo a mais!'
+      },
+      '2027-01': {
+        title: 'Fevereiro/2027 Completo! 🎈',
+        icon: '🎈',
+        msg: 'Mês curto, mas gigante no nosso propósito! Passamos da metade da jornada com folga. Segura firme a minha mão em pensamento: a linha de chegada está se aproximando!'
+      },
+      '2027-02': {
+        title: 'Março/2027 Superado! 🌷',
+        icon: '🌷',
+        msg: 'Entramos nos últimos 60 dias! Olhar para trás e ver tudo o que superamos dá um orgulho imenso. O ninho está sendo preparado e o abraço de reencontro vai ser o mais apertado da vida.'
+      },
+      '2027-03': {
+        title: 'Abril/2027 Vencido! 🔥',
+        icon: '🔥',
+        msg: 'A penúltima etapa está concluída! Agora falta muito pouco. Aquece o coração porque os dias estão voando e logo, logo essa contagem regressiva vira presença real todos os dias!'
+      },
+      '2027-04': {
+        title: '🎉 PARABÉNS! VOCÊ COMPLETOU! 🎉',
+        icon: '🏆',
+        msg: 'Parabeeens, vc completou o bingo do retorno hahah, Seu premio vai ser se encontrar comigo e viver juntos pra sempre!'
+      }
+    };
+
+    const listElement = document.getElementById('daysList');
+    const badgePercent = document.getElementById('badgePercent');
+    const progressFill = document.getElementById('progressFill');
+    const statRestantes = document.getElementById('statRestantes');
+    const statFeitos = document.getElementById('statFeitos');
+
+    const marcos = {
+      240: { img: 'WhatsApp Image 2026-09-02 at 19.20.21.jpeg', id: 'foto240', badge: 'Sol & Alegria', caption: 'Os dias ficam infinitamente mais leves ao seu lado.' },
+      210: { img: 'WhatsApp Image 2026-09-02 at 19.20.21 (1).jpeg', id: 'foto210', badge: 'Noite Iluminada', caption: 'Aquele sorriso que ilumina qualquer caminho.' },
+      180: { img: 'WhatsApp Image 2026-09-02 at 19.20.21 (2).jpeg', id: 'foto180', badge: 'Passos & Histórias', caption: 'Colecionando sorrisos por onde a gente passa.' },
+      150: { img: 'WhatsApp Image 2026-09-02 at 19.20.21 (3).jpeg', id: 'foto150', badge: 'Mesa Farta & Risadas', caption: 'Dividir a mesa, as conversas e o amor.' },
+      120: { img: 'WhatsApp Image 2026-09-02 at 19.20.21 (4).jpeg', id: 'foto120', badge: 'Nosso Abraço', caption: 'O melhor lugar do mundo é caber no seu colo.' },
+      90: { img: 'WhatsApp Image 2026-09-02 at 19.20.21 (5).jpeg', id: 'foto90', badge: 'Café & Afeto', caption: 'A beleza dos pequenos detalhes do dia a dia.' },
+      60: { img: 'WhatsApp Image 2026-09-02 at 19.20.21 (6).jpeg', id: 'foto60', badge: 'Família & União', caption: 'Construindo laços com quem a gente ama.' },
+      30: { img: 'WhatsApp Image 2026-09-02 at 19.25.03.jpeg', id: 'foto30', badge: 'Pôr do Sol Mágico', caption: 'O céu pintado de ouro e a certeza de estarmos juntos.' },
+      15: { img: 'WhatsApp Image 2026-09-02 at 19.25.03 (1).jpeg', id: 'foto15', badge: 'Cumplicidade', caption: 'Parceiros de vida, em qualquer lugar.' },
+      5: { img: 'WhatsApp Image 2026-09-02 at 19.25.04.jpeg', id: 'foto5', badge: 'Quase Lá ✨', caption: 'Contando cada segundo para celebrar o nosso amor!' },
+      1: { img: 'WhatsApp Image 2026-09-02 at 19.08.39 (1).jpeg', id: 'foto1', badge: 'O Grande Dia • O Beijo Eterno ✨', caption: 'O abraço e o beijo que selam o nosso para sempre.' }
+    };
+
+    function formatarData(data) {
+      return data.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' }).replace('.', '');
+    }
+
+    function atualizarDashboard() {
+      const marcados = Object.values(checks).filter(Boolean).length;
+      const restantes = TOTAL_DIAS - marcados;
+      const percentual = ((marcados / TOTAL_DIAS) * 100).toFixed(1);
+
+      badgePercent.textContent = `${percentual}%`;
+      progressFill.style.width = `${percentual}%`;
+      statRestantes.textContent = restantes;
+      statFeitos.textContent = marcados;
+    }
+
+    function checarMesCompleto(mesChave) {
+      const listaDias = diasPorMes[mesChave];
+      if (!listaDias || listaDias.length === 0) return;
+      const todosMarcados = listaDias.every(dia => checks[dia]);
+
+      if (todosMarcados) {
+        const jaNotificado = localStorage.getItem(`notificado_mes_${mesChave}`);
+        if (!jaNotificado) {
+          dispararPopupFofo(mesChave);
+          localStorage.setItem(`notificado_mes_${mesChave}`, 'true');
+        }
+      } else {
+        localStorage.removeItem(`notificado_mes_${mesChave}`);
+      }
+    }
+
+    function toggleCheck(diaRestante, mesChave) {
+      checks[diaRestante] = !checks[diaRestante];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(checks));
+
+      const card = document.getElementById(`card-${diaRestante}`);
+      if (checks[diaRestante]) {
+        card.classList.add('completed');
+      } else {
+        card.classList.remove('completed');
+      }
+      atualizarDashboard();
+      if (checks[diaRestante] && mesChave) {
+        checarMesCompleto(mesChave);
+      }
+    }
+
+    function dispararPopupFofo(mesChave) {
+      const popup = document.getElementById('cutePopup');
+      const dados = mensagensPorMes[mesChave] || {
+        title: 'Mês Concluído! ❤',
+        icon: '💖',
+        msg: 'Mais um mês inteirinho concluído! O nosso amor segue firme e lindo rumo ao objetivo.'
+      };
+
+      document.getElementById('popupTitle').textContent = dados.title;
+      document.getElementById('popupIcon').textContent = dados.icon;
+      document.getElementById('popupMessage').textContent = dados.msg;
+      
+      if (mesChave === '2027-04') {
+        document.getElementById('popupBtn').textContent = 'VIVER JUNTOS PRA SEMPRE! 💍';
+      } else {
+        document.getElementById('popupBtn').textContent = 'Continuar Juntos ❤';
+      }
+
+      popup.classList.add('show');
+    }
+
+    function fecharPopupFofo() {
+      document.getElementById('cutePopup').classList.remove('show');
+    }
+
+    function abrirModalAcoes() {
+      document.getElementById('modalAcoes').style.display = 'flex';
+    }
+
+    function fecharModalAcoes() {
+      document.getElementById('modalAcoes').style.display = 'none';
+    }
+
+    function preencherMes(mesChave) {
+      const dias = diasPorMes[mesChave];
+      if (!dias) return;
+
+      dias.forEach(d => {
+        checks[d] = true;
+        const card = document.getElementById(`card-${d}`);
+        if (card) card.classList.add('completed');
+      });
+
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(checks));
+      atualizarDashboard();
+      fecharModalAcoes();
+      checarMesCompleto(mesChave);
+    }
+
+    function salvarFotoLocal(event, imgId, storageKey, fbId) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64 = e.target.result;
+        document.getElementById(imgId).src = base64;
+        localStorage.setItem(storageKey, base64);
+        const fb = document.getElementById(fbId);
+        if (fb) fb.style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    for (let i = 1; i <= 15; i++) {
+      const key = `foto_wall${i}`;
+      const saved = localStorage.getItem(key);
+      const el = document.getElementById(`wallImg${i}`);
+      if (saved && el) el.src = saved;
+      if (el) {
+        el.onerror = () => {
+          if (!saved) {
+            const fb = document.getElementById(`fb_wall${i}`);
+            if (fb) fb.style.display = 'block';
+          }
+        };
+      }
+    }
+
+    for (let i = 0; i < TOTAL_DIAS; i++) {
+      const diaRestante = TOTAL_DIAS - i;
+      const progress = i / (TOTAL_DIAS - 1); 
+
+      const dataAtual = new Date(dataInicio);
+      dataAtual.setDate(dataInicio.getDate() + i);
+
+      const mesChave = `${dataAtual.getFullYear()}-${String(dataAtual.getMonth()).padStart(2, '0')}`;
+      if (!diasPorMes[mesChave]) diasPorMes[mesChave] = [];
+      diasPorMes[mesChave].push(diaRestante);
+
+      const isChecked = !!checks[diaRestante];
+      const isToday = obterDataLocalStr(dataAtual) === hojeStr;
+
+      const r = Math.round(76 + (244 - 76) * progress);
+      const g = Math.round(5 + (63 - 5) * progress);
+      const b = Math.round(25 + (94 - 25) * progress);
+
+      const cardBg = `rgba(${r}, ${g}, ${b}, ${0.55 + (progress * 0.25)})`;
+      const cardBorder = `rgba(254, 240, 138, ${0.22 + (progress * 0.35)})`;
+
+      const card = document.createElement('div');
+      card.className = `day-card ${isChecked ? 'completed' : ''}`;
+      card.id = `card-${diaRestante}`;
+      card.style.background = cardBg;
+      card.style.border = `1px solid ${cardBorder}`;
+      card.onclick = () => toggleCheck(diaRestante, mesChave);
+
+      card.innerHTML = `
+        <div class="left-col">
+          <div class="top-meta">
+            <span class="countdown-number">Falta ${diaRestante} ${diaRestante === 1 ? 'dia' : 'dias'}</span>
+            ${isToday ? '<span class="tag-today">Hoje</span>' : ''}
+          </div>
+          <span class="date-str">${formatarData(dataAtual)} • 2026/27</span>
+        </div>
+        <div class="heart-circle" style="border: 2px solid ${cardBorder}">
+          <svg viewBox="0 0 24 24">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="#fef08a"></path>
+          </svg>
+        </div>
+      `;
+
+      listElement.appendChild(card);
+
+      if (marcos[diaRestante]) {
+        const m = marcos[diaRestante];
+        const mCard = document.createElement('div');
+        mCard.className = 'timeline-milestone';
+
+        const storedBase64 = localStorage.getItem(`foto_${m.id}`);
+
+        mCard.innerHTML = `
+          <span class="milestone-badge">✨ ${m.badge}</span>
+          <img id="${m.id}" src="${storedBase64 || m.img}" alt="${m.badge}">
+          <div class="milestone-caption">${m.caption}</div>
+          <div id="fb_${m.id}" style="display:none;">
+            <label class="upload-btn">
+              Carregar foto
+              <input type="file" accept="image/*" style="display:none" onchange="salvarFotoLocal(event, '${m.id}', 'foto_${m.id}', 'fb_${m.id}')">
+            </label>
+          </div>
+        `;
+
+        listElement.appendChild(mCard);
+
+        setTimeout(() => {
+          const imgEl = document.getElementById(m.id);
+          if (imgEl) {
+            imgEl.onerror = () => {
+              if (!storedBase64) {
+                const fb = document.getElementById(`fb_${m.id}`);
+                if (fb) fb.style.display = 'block';
+              }
+            };
+          }
+        }, 50);
+      }
+    }
+
+    const monthBtnContainer = document.getElementById('monthButtonsList');
+    Object.keys(diasPorMes).forEach(mesChave => {
+      const [ano, mesNum] = mesChave.split('-');
+      const dataRef = new Date(parseInt(ano), parseInt(mesNum), 1);
+      const nomeMes = dataRef.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+
+      const btn = document.createElement('button');
+      btn.className = 'btn-month';
+      btn.textContent = `Marcar ${nomeMes}`;
+      btn.onclick = () => preencherMes(mesChave);
+      monthBtnContainer.appendChild(btn);
+    });
+
+    atualizarDashboard();
+  </script>
+</body>
+</html>
